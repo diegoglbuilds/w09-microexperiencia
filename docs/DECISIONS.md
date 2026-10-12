@@ -30,3 +30,19 @@
 - **Mechanical bug fixed:** the first production typecheck found the SME review screen reading `evidenceSummary`; submissions define that field as `summary`. The screen now renders the validated field and the production build passes.
 - Deploy and GitHub repository creation are intentionally not part of this implementation session.
 - **Next session first move:** run the persona pass on the rendered experience, starting with a narrow mobile viewport; fix any confusion around agreed payment versus payment processing and proof portability.
+
+## Mechanical Test — Post Deploy #1
+
+- **Date/session:** 2026-10-11, post Deploy #1 mechanical pass.
+- **Production URL tested:** https://w09-microexperiencia.vercel.app. The available web fetch tool could not access the URL, so no production page behavior is claimed.
+- **Exact testing method:** source review of `docs/PACKET.md`, app/domain/proof/API implementation, and tests; full `npm test`; `npm run build`; attempted production URL fetch through the available web tool.
+- **Browser availability or limitation:** browser automation was not available in this session (no browser/Playwright tool exposed). No browser clicks, screenshots, or visual observations were made. Production fetch returned inaccessible via tool.
+- **Tests performed:** mechanically reviewed task creation validation, positive/bounded MXN payment, hour bounds/order, exactly three rubric dimensions, evidence bounds, simulated task labels, simulated AI fallback labeling, separation of AI evaluation from human validation, explicit employer validation choices, proof state mapping, absence of global employability score, visible shadow warning, paid-work copy, browser-local persistence disclosure, Spanish labels, semantic labels/fieldset and responsive Tailwind breakpoints. Existing automated tests cover domain validation, evaluation/proof invariants and visible copy/workflow; date regression added below. Responsiveness and the production rendering remain source-inspected only.
+- **REAL bug found:** task deadline validation accepted impossible calendar values such as `2026-02-31`. The schema only checked the `YYYY-MM-DD` shape and string comparison against today, which does not guarantee a real date.
+- **Why it mattered:** users could publish a task with a deadline that no calendar contains, undermining task clarity and deadline validation despite a successful form submission.
+- **Fix made:** added a UTC component round-trip calendar check to the deadline schema before the existing not-in-the-past check.
+- **Regression coverage:** new test in `lib/domain-date.test.ts` proves the impossible date is rejected.
+- **Final `npm test` result:** PASS, 3 test files and 9 tests.
+- **Final `npm run build` result:** PASS, Next.js production build and TypeScript check completed.
+- **Remaining risks:** no browser or production page verification; browser-local storage is not secure/durable; employer validation/payment remain simulated; deterministic rubric matching is simple keyword matching; responsive layout and assistive-technology behavior were not exercised in a browser.
+- **Next session first move:** Persona test.

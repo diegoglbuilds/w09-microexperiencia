@@ -1,8 +1,13 @@
 import { z } from "zod";
 
 const today = () => new Date().toISOString().slice(0,10);
+const isCalendarDate = (value:string) => {
+  const [year,month,day]=value.split("-").map(Number);
+  const date=new Date(Date.UTC(year,month-1,day));
+  return date.getUTCFullYear()===year&&date.getUTCMonth()===month-1&&date.getUTCDate()===day;
+};
 export const rubricItemSchema=z.object({label:z.string().trim().min(2).max(60),description:z.string().trim().min(8).max(180)});
-export const taskSchema=z.object({title:z.string().trim().min(8,"Escribe un título claro.").max(90),description:z.string().trim().min(20).max(600),hoursMin:z.number().int().min(1).max(80),hoursMax:z.number().int().min(1).max(80),paymentMxn:z.number().int().min(100).max(100000),deadline:z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(d=>d>=today(),"La fecha debe ser hoy o posterior."),skills:z.array(z.string().trim().min(2).max(40)).min(1).max(6),rubric:z.array(rubricItemSchema).length(3)}).refine(x=>x.hoursMin<=x.hoursMax,{path:["hoursMax"],message:"Las horas máximas deben ser iguales o mayores."});
+export const taskSchema=z.object({title:z.string().trim().min(8,"Escribe un título claro.").max(90),description:z.string().trim().min(20).max(600),hoursMin:z.number().int().min(1).max(80),hoursMax:z.number().int().min(1).max(80),paymentMxn:z.number().int().min(100).max(100000),deadline:z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(isCalendarDate,"Escribe una fecha real.").refine(d=>d>=today(),"La fecha debe ser hoy o posterior."),skills:z.array(z.string().trim().min(2).max(40)).min(1).max(6),rubric:z.array(rubricItemSchema).length(3)}).refine(x=>x.hoursMin<=x.hoursMax,{path:["hoursMax"],message:"Las horas máximas deben ser iguales o mayores."});
 export const submissionSchema=z.object({taskId:z.string().min(1).max(80),summary:z.string().trim().min(20).max(500),items:z.array(z.string().trim().min(4).max(180)).min(1).max(5),aiUseDisclosure:z.enum(["no","assisted"])});
 export type Task=z.infer<typeof taskSchema>&{id:string;status:"published";isSimulated:boolean};
 export type Submission=z.infer<typeof submissionSchema>&{id:string;syntheticWorkerName:string;submittedAt:string;isSimulated:boolean};
