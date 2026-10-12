@@ -46,3 +46,15 @@
 - **Final `npm run build` result:** PASS, Next.js production build and TypeScript check completed.
 - **Remaining risks:** no browser or production page verification; browser-local storage is not secure/durable; employer validation/payment remain simulated; deterministic rubric matching is simple keyword matching; responsive layout and assistive-technology behavior were not exercised in a browser.
 - **Next session first move:** Persona test.
+
+## Persona Test — Post Mechanical Fix
+
+- **Synthetic persona:** Luis Hernández, fictional 42-year-old owner/operations manager of a 12-person Estado de México distribution SME, no HR team, basic web comfort, referral-first, cost- and AI-skeptical.
+- **Testing method:** synthetic source walkthrough of all product states/copy, schemas, evaluation/proof logic, and existing UI test; re-traced the validated-proof state after a narrow copy fix.
+- **Browser/screenshot limitation:** no browser automation or screenshots were available; no live-user research or observed persona reactions are claimed.
+- **Worst confusion:** “Evidencia validada” on portable proof was undefined and could be mistaken for hiring, payment confirmation or an independently verifiable credential; next step was not explicit.
+- **Design decision:** preserve validation as the employer's decision about this task's evidence, and clarify its limited meaning and the actual sharing step without promising employment or payment.
+- **Fix:** added state-specific proof copy: validated evidence is not a hire or guarantee of more work and can be saved/shared as PDF; unvalidated records are labeled as pending. Added an assertion to the employer-validation UI regression test.
+- **Re-test result:** source re-trace confirms the human validation state drives the new note; the UI workflow regression test asserts it after the employer action. `npm test` passed (3 files, 9 tests), and `npm run build` passed with TypeScript and static generation complete.
+- **Remaining risk:** payment is not processed; evidence is typed and not independently authenticated; keyword evaluation can overstate evidence; no revision loop or enforced anti-repeat rule; no browser rendering/accessibility review.
+- **Next session first move:** final deploy and submission artifacts.
