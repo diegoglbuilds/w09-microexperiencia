@@ -22,6 +22,11 @@
 
 ## Test, deploy, and next session
 
-- Test/build results and any unresolved limits will be recorded after the mechanical pass below.
+- **Test:** `npm test` passes (8 tests across 2 files), covering task and submission validation, invalid money/hour ranges, deterministic rubric output, simulated explanation label, no global score/human decision in AI result, and portable proof behavior.
+- **Build:** `npm run build` passes on Next.js 16.4.0 after fixing the review screen to display the validated submission `summary` field. Build statically prerenders `/`; `/api/evaluate` is dynamic.
+- **Dependency audit:** `npm audit --json` returned 0 advisories after updating Next.js to 16.4.0 and Vitest to 5.0.3. The prior Vitest chain reported three advisories; the patched test runner removed them. A later audit retry could not reach npm's advisory endpoint, so that retry did not independently refresh the result.
+- **Deploy notes:** no deployment performed, as requested. `OPENAI_API_KEY` is optional; without it, the product uses deterministic explanation. No other environment variable is required.
+- **Unresolved limits:** browser local storage is neither secure nor durable; the demo uses synthetic identities and does not process payments. The employer validation control is a simulated SME action without real authentication. Evidence matching is intentionally simple keyword-based logic, not a claim of objective skill measurement. No global worker score is created.
+- **Mechanical bug fixed:** the first production typecheck found the SME review screen reading `evidenceSummary`; submissions define that field as `summary`. The screen now renders the validated field and the production build passes.
 - Deploy and GitHub repository creation are intentionally not part of this implementation session.
 - **Next session first move:** run the persona pass on the rendered experience, starting with a narrow mobile viewport; fix any confusion around agreed payment versus payment processing and proof portability.
